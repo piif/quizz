@@ -25,9 +25,13 @@ void loop() {
 	byte b;
 	b = digitalRead(BUTTON_0);
 	if (b != button) {
-		button = b;
-		Serial.print("button : "); Serial.println(b);
-		led = !b;
-		digitalWrite(LED_0, led);
+		delay(2);
+		b = digitalRead(BUTTON_0);
+		if (b != button) {
+			button = b;
+			Serial.print("button : "); Serial.println(b);
+			led = !b;
+			digitalWrite(LED_0, led);
+		}
 	}
 }
