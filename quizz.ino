@@ -4,34 +4,36 @@
 	#define DEFAULT_BAUDRATE 115200
 #endif
 
-#define BUTTON_0 2
-
-#define LED_0 13
+const byte buttonPins[5] = { 2, 3, 4, 5, 6 };
+const byte ledPins[5] = { 13, 9, 10, 11, 12 };
 
 void setup(void) {
 	Serial.begin(DEFAULT_BAUDRATE);
 
-	pinMode(LED_0, OUTPUT);
-
-	pinMode(BUTTON_0, INPUT_PULLUP);
+	for(int i = 0 ; i <= 4; i++) {
+		pinMode(buttonPins[i], INPUT_PULLUP);
+		pinMode(ledPins[i], OUTPUT);
+	}
 
 	Serial.println("Ready.");
 }
 
-byte button = 1;
-byte led;
+byte buttons[5] = { 1, 1, 1, 1, 1 };
+byte leds[5]; // 0 partout par défaut
 
 void loop() {
-	byte b;
-	b = digitalRead(BUTTON_0);
-	if (b != button) {
-		delay(2);
-		b = digitalRead(BUTTON_0);
-		if (b != button) {
-			button = b;
-			Serial.print("button : "); Serial.println(b);
-			led = !b;
-			digitalWrite(LED_0, led);
+	for(int i = 0 ; i <= 4; i++) {
+		byte b;
+		b = digitalRead(buttonPins[i]);
+		if (b != buttons[i]) {
+			delay(2);
+			b = digitalRead(buttonPins[i]);
+			if (b != buttons[i]) {
+				buttons[i] = b;
+				Serial.print("button "); Serial.print(i); Serial.print(" : "); Serial.println(b);
+				leds[i]= !b;
+				digitalWrite(ledPins[i], leds[i]);
+			}
 		}
 	}
 }
