@@ -4,6 +4,8 @@
 	#define DEFAULT_BAUDRATE 115200
 #endif
 
+#define SPEAKER 7
+
 const byte buttonPins[5] = { A0, A1, A2, A3, A4 };
 const byte ledPins[5] = { 8, 9, 10, 11, 12 };
 
@@ -26,6 +28,7 @@ void setup(void) {
 
 	Serial.println("Init");
 
+	tone(SPEAKER, 220, 500);
 	byte l = 1;
 	for (int i = 0; i < 10; i++) {
 		for(int i = 0 ; i <= 4; i++) {
@@ -51,6 +54,15 @@ void loop() {
 			}
 
 			digitalWrite(ledPins[0], 1);
+			// La, Ré, Fa# : 880 1174 1479
+			tone(SPEAKER, 880);
+			delay(100);
+			tone(SPEAKER, 1174);
+			delay(100);
+			tone(SPEAKER, 1479);
+			delay(100);
+			noTone(SPEAKER);
+
 			step = WAIT_FIRST;
 		}
 
@@ -65,6 +77,7 @@ void loop() {
 				}
 				m <<= 1;
 			}
+			tone(SPEAKER, 220, 200);
 			digitalWrite(ledPins[0], 0);
 			step = WAIT_START;
 		}
