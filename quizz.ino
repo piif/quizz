@@ -4,10 +4,8 @@
 	#define DEFAULT_BAUDRATE 115200
 #endif
 
-const byte buttonPins[5] = { 2, 3, 4, 5, 6 };
+const byte buttonPins[5] = { A0, A1, A2, A3, A4 };
 const byte ledPins[5] = { 8, 9, 10, 11, 12 };
-
-#define BUTTON_MASK ((PIND & 0b01111100 ) >> 2)
 
 byte buttons = 0b11111;
 byte leds[5]; // 0 partout par défaut
@@ -48,17 +46,17 @@ void loop() {
 		if (digitalRead(buttonPins[0]) == 0) {
 			Serial.println("Waiting first push");
 
-			digitalWrite(ledPins[0], 1);
-			for(int i = 1 ; i <= 4; i++) {
+			for(byte i = 1 ; i <= 4; i++) {
 				digitalWrite(ledPins[i], 0);
 			}
 
+			digitalWrite(ledPins[0], 1);
 			step = WAIT_FIRST;
 		}
 
 	} else if (step == WAIT_FIRST) {
 
-		byte b = (PIND & 0b01111000 ) >> 2;
+		byte b = PINC & 0b11110;
 		if (b != 0b11110) {
 			for(byte i = 1, m = 0b00010 ; i <= 4; i++) {
 				if ((b & m) == 0) {
@@ -67,6 +65,7 @@ void loop() {
 				}
 				m <<= 1;
 			}
+			digitalWrite(ledPins[0], 0);
 			step = WAIT_START;
 		}
 
