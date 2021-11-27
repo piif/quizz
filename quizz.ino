@@ -8,6 +8,9 @@
 #define LONG_PRESS_DELAY 1000
 #define BUZZ_NOTE 220
 
+#define LIGHT_ON 0
+#define LIGHT_OFF 1
+
 #define MAX_SONG 25
 #define SIMON_PLAY_DELAY 300
 #define SIMON_SILENCE_DELAY 200
@@ -31,17 +34,17 @@ enum {
 
 void quizzSound() {
 	for(byte i = 0 ; i <= 3; i++) {
-		digitalWrite(ledPins[i], 0);
-		digitalWrite(ledPins[i+1], 1);
+		digitalWrite(ledPins[i], LIGHT_OFF);
+		digitalWrite(ledPins[i+1], LIGHT_ON);
 		tone(SPEAKER, notes[i]*2);
 		delay(100);
 	}
 	noTone(SPEAKER);
-	digitalWrite(ledPins[4], 0);
+	digitalWrite(ledPins[4], LIGHT_OFF);
 }
 
 void quizzInit() {
-	digitalWrite(ledPins[0], 0);
+	digitalWrite(ledPins[0], LIGHT_OFF);
 	quizzSound();
 
 	Serial.println("Waiting start");
@@ -54,7 +57,7 @@ void quizzWaitStart() {
 	}
 
 	quizzSound();
-	digitalWrite(ledPins[0], 1);
+	digitalWrite(ledPins[0], LIGHT_ON);
 
 	Serial.println("Waiting first push");
 	step = QUIZZ_WAIT_FIRST;
@@ -69,7 +72,7 @@ void quizzWaitFirst() {
 	for(byte i = 1, m = 0b00010 ; i <= 4; i++) {
 		if ((b & m) == 0) {
 			Serial.print("Winner "); Serial.println(i);
-			digitalWrite(ledPins[i], 1);
+			digitalWrite(ledPins[i], LIGHT_ON);
 		}
 		m <<= 1;
 	}
@@ -77,7 +80,7 @@ void quizzWaitFirst() {
 	delay(200);
 	noTone(SPEAKER);
 
-	digitalWrite(ledPins[0], 0);
+	digitalWrite(ledPins[0], LIGHT_OFF);
 	step = QUIZZ_WAIT_START;
 }
 
@@ -93,17 +96,17 @@ void simonAddNote() {
 
 void simonSound() {
 	for(byte i = 0 ; i <= 3; i++) {
-		digitalWrite(ledPins[i], 0);
-		digitalWrite(ledPins[i+1], 1);
+		digitalWrite(ledPins[i], LIGHT_OFF);
+		digitalWrite(ledPins[i+1], LIGHT_ON);
 		tone(SPEAKER, notes[i]);
 		delay(200);
 	}
 	noTone(SPEAKER);
-	digitalWrite(ledPins[4], 0);
+	digitalWrite(ledPins[4], LIGHT_OFF);
 }
 
 void simonInit() {
-	digitalWrite(ledPins[0], 0);
+	digitalWrite(ledPins[0], LIGHT_OFF);
 
 	simonSound();
 	step = SIMON_WAIT_START;
@@ -122,20 +125,20 @@ void simonWaitStart() {
 }
 
 void simonPlay() {
-	digitalWrite(ledPins[0], 0);
+	digitalWrite(ledPins[0], LIGHT_OFF);
 
 	for(byte i = 0; i < songLast; i++) {
-		digitalWrite(ledPins[song[i]], 1);
+		digitalWrite(ledPins[song[i]], LIGHT_ON);
 		tone(SPEAKER, notes[song[i]-1]);
 		delay(SIMON_PLAY_DELAY);
 
-		digitalWrite(ledPins[song[i]], 0);
+		digitalWrite(ledPins[song[i]], LIGHT_OFF);
 		noTone(SPEAKER);
 		delay(SIMON_SILENCE_DELAY);
 	}
 
 	playIndex = 0;
-	digitalWrite(ledPins[0], 1);
+	digitalWrite(ledPins[0], LIGHT_ON);
 	step = SIMON_LISTEN_WAIT_PRESS;
 }
 
@@ -184,10 +187,10 @@ void simonListenWaitPress() {
 	Serial.print("Press "); Serial.print(n); Serial.print(", wait "); Serial.println(song[playIndex]);
 
 	if (song[playIndex] == n) {
-		digitalWrite(ledPins[n], 1);
+		digitalWrite(ledPins[n], LIGHT_ON);
 		tone(SPEAKER, notes[song[playIndex]-1]);
 		delay(SIMON_PLAY_DELAY);
-		digitalWrite(ledPins[n], 0);
+		digitalWrite(ledPins[n], LIGHT_OFF);
 		noTone(SPEAKER);
 		playIndex++;
 
@@ -195,12 +198,12 @@ void simonListenWaitPress() {
 
 	} else {
 		if (n != 0xFF) {
-			digitalWrite(ledPins[n], 1);
+			digitalWrite(ledPins[n], LIGHT_ON);
 		}
 		tone(SPEAKER, BUZZ_NOTE);
 		delay(SIMON_PLAY_DELAY*2);
 		if (n != 0xFF) {
-			digitalWrite(ledPins[n], 0);
+			digitalWrite(ledPins[n], LIGHT_OFF);
 		}
 		noTone(SPEAKER);
 
