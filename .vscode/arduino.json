@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "simple_quizz/simple_quizz.ino",
+    "output": "build",
+    "port": "/dev/ttyUSB0"
+}
