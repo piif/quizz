@@ -12,6 +12,13 @@
 
 #define BUZZER A0
 
+// Si b , Ré b , Fa , Si b
+#define NOTE_1 466
+#define NOTE_2 554
+#define NOTE_3 697
+#define NOTE_4 932
+#define NOTE_BUZZ 220
+
 void setup() {
     Serial.begin(115200);
     pinMode(BOUTON_0, INPUT_PULLUP);
@@ -38,13 +45,23 @@ void setup() {
     Serial.println("fin setup");
 }
 
-// // l'état des boutons
-// byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0;
+void buzz() {
+	tone(BUZZER, NOTE_BUZZ);
+	delay(200);
+	noTone(BUZZER);
+}
 
-// // l'état des lumières
-// byte l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0;
-
-// byte state;
+void jingle() {
+	tone(BUZZER, NOTE_1);
+	delay(100);
+	tone(BUZZER, NOTE_2);
+	delay(100);
+	tone(BUZZER, NOTE_3);
+	delay(100);
+	tone(BUZZER, NOTE_4);
+	delay(100);
+	noTone(BUZZER);
+}
 
 void attendreDepart() {
     while(digitalRead(BOUTON_0) == HIGH) {
@@ -80,6 +97,7 @@ void loop() {
 
     // attendre le lancement de partie
     attendreDepart();
+    jingle();
 
     // tout éteindre
     digitalWrite(LED_0, LOW);
@@ -90,22 +108,5 @@ void loop() {
 
     // attendre un gagnant
     attendreGagnant();
-
-    // b0 = !digitalRead(BOUTON_0);
-    // b1 = !digitalRead(BOUTON_1);
-    // b2 = !digitalRead(BOUTON_2);
-    // b3 = !digitalRead(BOUTON_3);
-    // b4 = !digitalRead(BOUTON_4);
-
-    // byte newState = (b4 << 4) | (b3 << 3) | (b2 << 2) | (b1 << 1) | b0;
-    // if (state != newState) {
-    //     state = newState;
-    //     Serial.println(state, BIN);
-    // }
-
-    // digitalWrite(LED_0, b0);
-    // digitalWrite(LED_1, b1);
-    // digitalWrite(LED_2, b2);
-    // digitalWrite(LED_3, b3);
-    // digitalWrite(LED_4, b4);
+    buzz();
 }
